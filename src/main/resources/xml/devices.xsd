@@ -4,46 +4,46 @@
 	xmlns:tns="http://www.example.org/devices"
 	elementFormDefault="qualified">
 
-	<element name="devices">
+	<element name="Devices">
 		<complexType>
 			<sequence>
-				<element ref="tns:device" maxOccurs="unbounded" />
+				<element ref="tns:Device" maxOccurs="unbounded" />
 			</sequence>
 		</complexType>
 	</element>
 
-	<complexType name="device">
+	<complexType name="Device">
 		<sequence>
 			<element name="name" type="string" />
-			<element name="baseInfo" type="tns:baseInfo" />
-			<element name="deviceType" type="tns:deviceType" />
+			<element name="baseInfo" type="tns:BaseInfo" />
+			<element name="deviceType" type="tns:DeviceType" />
 			<element name="origin" type="string" />
 			<element name="release" type="gYearMonth" />
 			<element name="price" type="positiveInteger" />
 			<element name="isCritical" type="boolean" />
 		</sequence>
-		<attribute name="id" type="ID" use="required" />
-		<attribute name="photoRef" type="string" use="optional"></attribute>
+		<attribute name="id" type="ID" use="required"/>		
+		<attribute name="photoRef" type="string" use="optional"/>
 	</complexType>
 
-	<complexType name="baseInfo">
+	<complexType name="BaseInfo">
 		<all>
 			<element name="producer" type="string"></element>
 			<element name="model" type="string"></element>
 			<element name="serial" type="string"></element>
 		</all>
 	</complexType>
-
-	<simpleType name="deviceType">
+	
+	<simpleType name="DeviceType">
 		<restriction base="string">
 			<enumeration value="integrated"></enumeration>
 			<enumeration value="peripheral"></enumeration>
 		</restriction>
 	</simpleType>
 
-	<complexType name="processor">
+	<complexType name="Processor">
 		<complexContent>
-			<extension base="tns:device">
+			<extension base="tns:Device">
 				<sequence>
 					<element name="codeName" type="string" />
 					<element name="frequency" type="positiveInteger" />
@@ -53,11 +53,11 @@
 		</complexContent>
 	</complexType>
 
-	<complexType name="motherboard">
+	<complexType name="Motherboard">
 		<complexContent>
-			<extension base="tns:device">
+			<extension base="tns:Device">
 				<sequence>
-					<element name="sizeType" type="tns:sizeType"></element>
+					<element name="sizeType" type="tns:SizeType"></element>
 					<element name="power" type="string" />
 					<element name="isCooler" type="boolean"></element>
 				</sequence>
@@ -65,7 +65,7 @@
 		</complexContent>
 	</complexType>
 
-	<simpleType name="sizeType">
+	<simpleType name="SizeType">
 		<restriction base="string">
 			<enumeration value="atx"></enumeration>
 			<enumeration value="itx"></enumeration>
@@ -74,19 +74,19 @@
 		</restriction>
 	</simpleType>
 
-	<complexType name="storageDevice">
+	<complexType name="StorageDevice">
 		<complexContent>
-			<extension base="tns:device">
+			<extension base="tns:Device">
 				<sequence>
 					<element name="storageDeviceType"
-						type="tns:storageDeviceType" />
+						type="tns:StorageDeviceType" />
 					<element name="volume" type="string" />
 				</sequence>
 			</extension>
 		</complexContent>
 	</complexType>
 
-	<simpleType name="storageDeviceType">
+	<simpleType name="StorageDeviceType">
 		<restriction base="string">
 			<enumeration value="hdd"></enumeration>
 			<enumeration value="ssd"></enumeration>
@@ -94,18 +94,18 @@
 		</restriction>
 	</simpleType>
 
-	<complexType name="mouse">
+	<complexType name="Mouse">
 		<complexContent>
-			<extension base="tns:device">
+			<extension base="tns:Device">
 				<sequence>
-					<element name="portType" type="tns:portType" />
-					<element name="connectionType" type="tns:connectionType" />
+					<element name="portType" type="tns:PortType" />
+					<element name="connectionType" type="tns:ConnectionType" />
 				</sequence>
 			</extension>
 		</complexContent>
 	</complexType>
 
-	<simpleType name="portType">
+	<simpleType name="PortType">
 		<restriction base="string">
 			<enumeration value="lpt"></enumeration>
 			<enumeration value="com"></enumeration>
@@ -114,20 +114,20 @@
 		</restriction>
 	</simpleType>
 
-	<simpleType name="connectionType">
+	<simpleType name="ConnectionType">
 		<restriction base="string">
 			<enumeration value="wired"></enumeration>
 			<enumeration value="wireless"></enumeration>
 		</restriction>
 	</simpleType>
 
-	<element name="device" type="tns:device" abstract="true" />
-	<element name="processor" type="tns:processor"
-		substitutionGroup="tns:device" />
-	<element name="motherboard" type="tns:motherboard"
-		substitutionGroup="tns:device" />
-	<element name="storageDevice" type="tns:storageDevice"
-		substitutionGroup="tns:device" />
-	<element name="mouse" type="tns:mouse"
-		substitutionGroup="tns:device" />
+	<element name="Device" type="tns:Device" abstract="true"/>
+	<element name="Processor" type="tns:Processor"
+		substitutionGroup="tns:Device" />
+	<element name="Motherboard" type="tns:Motherboard"
+		substitutionGroup="tns:Device" />
+	<element name="StorageDevice" type="tns:StorageDevice"
+		substitutionGroup="tns:Device" />
+	<element name="Mouse" type="tns:Mouse"
+		substitutionGroup="tns:Device" />
 </schema>

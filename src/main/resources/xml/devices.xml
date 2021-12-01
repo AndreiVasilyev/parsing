@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Devices xmlns:tns="http://www.example.org/devices"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.example.org/devices devices.xsd ">
-	<processor id="1" photoRef="/photo/photo1.jpg">
+<Devices xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://www.example.org/devices"
+	xsi:schemaLocation="http://www.example.org/devices devices.xsd">
+	<Processor id="d1" photoRef="/photo/photo1.jpg">
 		<name>processor1</name>
 		<baseInfo>
 			<producer>Intel</producer>
@@ -11,14 +11,14 @@
 		</baseInfo>
 		<deviceType>integrated</deviceType>
 		<origin>Vietnam</origin>
-		<release>042019</release>
+		<release>2019-01</release>
 		<price>50</price>
-		<critical>true</critical>
+		<isCritical>true</isCritical>
 		<codeName>codeName1</codeName>
 		<frequency>2400</frequency>
 		<power>30</power>
-	</processor>
-	<processor id="2" photoRef="/photo/photo2.jpg">
+	</Processor>
+	<Processor id="d2" photoRef="/photo/photo2.jpg">
 		<name>processor2</name>
 		<baseInfo>
 			<producer>AMD</producer>
@@ -27,14 +27,14 @@
 		</baseInfo>
 		<deviceType>integrated</deviceType>
 		<origin>Taiwan</origin>
-		<release>072020</release>
+		<release>2020-07</release>
 		<price>40</price>
-		<critical>true</critical>
+		<isCritical>true</isCritical>
 		<codeName>codeName2</codeName>
 		<frequency>2500</frequency>
 		<power>20</power>
-	</processor>
-	<processor id="3">
+	</Processor>
+	<Processor id="d3">
 		<name>processor3</name>
 		<baseInfo>
 			<producer>Intel</producer>
@@ -43,14 +43,14 @@
 		</baseInfo>
 		<deviceType>integrated</deviceType>
 		<origin>Vietnam</origin>
-		<release>082019</release>
+		<release>2019-08</release>
 		<price>50</price>
-		<critical>true</critical>
+		<isCritical>true</isCritical>
 		<codeName>codeName3</codeName>
 		<frequency>2100</frequency>
 		<power>20</power>
-	</processor>
-	<processor id="4">
+	</Processor>
+	<Processor id="d4">
 		<name>processor4</name>
 		<baseInfo>
 			<producer>Intel</producer>
@@ -59,14 +59,14 @@
 		</baseInfo>
 		<deviceType>integrated</deviceType>
 		<origin>Vietnam</origin>
-		<release>082020</release>
+		<release>2020-08</release>
 		<price>80</price>
-		<critical>true</critical>
+		<isCritical>true</isCritical>
 		<codeName>codeName4</codeName>
 		<frequency>3000</frequency>
 		<power>60</power>
-	</processor>
-	<processor id="5" photoRef="/photo/photo3.jpg">
+	</Processor>
+	<Processor id="d5" photoRef="/photo/photo3.jpg">
 		<name>processor5</name>
 		<baseInfo>
 			<producer>AMD</producer>
@@ -75,14 +75,14 @@
 		</baseInfo>
 		<deviceType>integrated</deviceType>
 		<origin>China</origin>
-		<release>022020</release>
+		<release>2020-02</release>
 		<price>50</price>
-		<critical>true</critical>
+		<isCritical>true</isCritical>
 		<codeName>codeName5</codeName>
 		<frequency>2400</frequency>
 		<power>40</power>
-	</processor>
-	<motherboard id="6" photoRef="/photo/photo4.jpg">
+	</Processor>
+	<Motherboard id="d6" photoRef="/photo/photo4.jpg">
 		<name>motherboard1</name>
 		<baseInfo>
 			<producer>Asus</producer>
@@ -91,14 +91,14 @@
 		</baseInfo>
 		<deviceType>integrated</deviceType>
 		<origin>China</origin>
-		<release>052020</release>
+		<release>2020-05</release>
 		<price>40</price>
-		<critical>true</critical>
+		<isCritical>true</isCritical>
 		<sizeType>atx</sizeType>
 		<power>40</power>
 		<isCooler>true</isCooler>
-	</motherboard>
-	<motherboard id="7">
+	</Motherboard>
+	<Motherboard id="d7">
 		<name>motherboard2</name>
 		<baseInfo>
 			<producer>Acer</producer>
@@ -107,14 +107,14 @@
 		</baseInfo>
 		<deviceType>integrated</deviceType>
 		<origin>China</origin>
-		<release>012021</release>
+		<release>2021-11</release>
 		<price>40</price>
-		<critical>true</critical>
+		<isCritical>true</isCritical>
 		<sizeType>itx</sizeType>
 		<power>60</power>
 		<isCooler>false</isCooler>
-	</motherboard>
-	<motherboard id="8" photoRef="/photo/photo3.jpg">
+	</Motherboard>
+	<Motherboard id="d8" photoRef="/photo/photo3.jpg">
 		<name>motherboard3</name>
 		<baseInfo>
 			<producer>Intel</producer>
@@ -123,14 +123,14 @@
 		</baseInfo>
 		<deviceType>integrated</deviceType>
 		<origin>China</origin>
-		<release>102020</release>
+		<release>2020-10</release>
 		<price>70</price>
-		<critical>true</critical>
+		<isCritical>true</isCritical>
 		<sizeType>mini_atx</sizeType>
 		<power>55</power>
 		<isCooler>false</isCooler>
-	</motherboard>
-	<motherboard id="9">
+	</Motherboard>
+	<Motherboard id="d9">
 		<name>motherboard4</name>
 		<baseInfo>
 			<producer>AsRock</producer>
@@ -139,14 +139,14 @@
 		</baseInfo>
 		<deviceType>integrated</deviceType>
 		<origin>Singopore</origin>
-		<release>42020</release>
+		<release>2020-04</release>
 		<price>65</price>
-		<critical>true</critical>
+		<isCritical>true</isCritical>
 		<sizeType>mini_atx</sizeType>
 		<power>50</power>
 		<isCooler>false</isCooler>
-	</motherboard>
-	<motherboard id="10">
+	</Motherboard>
+	<Motherboard id="d10">
 		<name>motherboard5</name>
 		<baseInfo>
 			<producer>Asus</producer>
@@ -155,14 +155,14 @@
 		</baseInfo>
 		<deviceType>integrated</deviceType>
 		<origin>China</origin>
-		<release>62020</release>
+		<release>2020-06</release>
 		<price>50</price>
-		<critical>true</critical>
+		<isCritical>true</isCritical>
 		<sizeType>micro_atx</sizeType>
 		<power>40</power>
 		<isCooler>true</isCooler>
-	</motherboard>
-	<storageDevice id="11">
+	</Motherboard>
+	<StorageDevice id="d11">
 		<name>storageDevice1</name>
 		<baseInfo>
 			<producer>Seagate</producer>
@@ -171,13 +171,13 @@
 		</baseInfo>
 		<deviceType>integrated</deviceType>
 		<origin>China</origin>
-		<release>112020</release>
+		<release>2020-11</release>
 		<price>100</price>
-		<critical>true</critical>
+		<isCritical>true</isCritical>
 		<storageDeviceType>hdd</storageDeviceType>
 		<volume>4Tb</volume>
-	</storageDevice>
-	<storageDevice id="12">
+	</StorageDevice>
+	<StorageDevice id="d12">
 		<name>storageDevice2</name>
 		<baseInfo>
 			<producer>Hitachi</producer>
@@ -186,13 +186,13 @@
 		</baseInfo>
 		<deviceType>integrated</deviceType>
 		<origin>Japan</origin>
-		<release>12020</release>
+		<release>2020-01</release>
 		<price>90</price>
-		<critical>true</critical>
+		<isCritical>true</isCritical>
 		<storageDeviceType>hdd</storageDeviceType>
 		<volume>4Tb</volume>
-	</storageDevice>
-	<storageDevice id="13">
+	</StorageDevice>
+	<StorageDevice id="d13">
 		<name>storageDevice3</name>
 		<baseInfo>
 			<producer>Adata</producer>
@@ -201,13 +201,13 @@
 		</baseInfo>
 		<deviceType>peripheral</deviceType>
 		<origin>China</origin>
-		<release>102020</release>
+		<release>2020-10</release>
 		<price>30</price>
-		<critical>false</critical>
+		<isCritical>false</isCritical>
 		<storageDeviceType>flash</storageDeviceType>
 		<volume>520Mb</volume>
-	</storageDevice>
-	<storageDevice id="14">
+	</StorageDevice>
+	<StorageDevice id="d14">
 		<name>storageDevice4</name>
 		<baseInfo>
 			<producer>Samsung</producer>
@@ -216,13 +216,13 @@
 		</baseInfo>
 		<deviceType>integrated</deviceType>
 		<origin>Korea</origin>
-		<release>052021</release>
+		<release>2021-05</release>
 		<price>70</price>
-		<critical>true</critical>
+		<isCritical>true</isCritical>
 		<storageDeviceType>ssd</storageDeviceType>
 		<volume>1Tb</volume>
-	</storageDevice>
-	<storageDevice id="15">
+	</StorageDevice>
+	<StorageDevice id="d15">
 		<name>storageDevice5</name>
 		<baseInfo>
 			<producer>Kingsone</producer>
@@ -231,13 +231,13 @@
 		</baseInfo>
 		<deviceType>peripheral</deviceType>
 		<origin>China</origin>
-		<release>22019</release>
+		<release>2019-02</release>
 		<price>40</price>
-		<critical>false</critical>
+		<isCritical>false</isCritical>
 		<storageDeviceType>ssd</storageDeviceType>
 		<volume>520Mb</volume>
-	</storageDevice>
-	<mouse id="16">
+	</StorageDevice>
+	<Mouse id="d16">
 		<name>mouse1</name>
 		<baseInfo>
 			<producer>Smartby</producer>
@@ -246,13 +246,13 @@
 		</baseInfo>
 		<deviceType>peripheral</deviceType>
 		<origin>China</origin>
-		<release>22021</release>
+		<release>2021-02</release>
 		<price>10</price>
-		<critical>false</critical>
+		<isCritical>false</isCritical>
 		<portType>usb</portType>
 		<connectionType>wireless</connectionType>
-	</mouse>
-	<mouse id="17">
+	</Mouse>
+	<Mouse id="d17">
 		<name>mouse2</name>
 		<baseInfo>
 			<producer>Defender</producer>
@@ -261,13 +261,13 @@
 		</baseInfo>
 		<deviceType>peripheral</deviceType>
 		<origin>China</origin>
-		<release>32021</release>
+		<release>2021-03</release>
 		<price>5</price>
-		<critical>false</critical>
+		<isCritical>false</isCritical>
 		<portType>usb</portType>
 		<connectionType>wired</connectionType>
-	</mouse>
-	<mouse id="18">
+	</Mouse>
+	<Mouse id="d18">
 		<name>mouse3</name>
 		<baseInfo>
 			<producer>Logitech</producer>
@@ -276,13 +276,13 @@
 		</baseInfo>
 		<deviceType>peripheral</deviceType>
 		<origin>China</origin>
-		<release>42021</release>
+		<release>2021-04</release>
 		<price>7</price>
-		<critical>false</critical>
+		<isCritical>false</isCritical>
 		<portType>ps_2</portType>
 		<connectionType>wired</connectionType>
-	</mouse>
-	<mouse id="19">
+	</Mouse>
+	<Mouse id="d19">
 		<name>mouse4</name>
 		<baseInfo>
 			<producer>Defender</producer>
@@ -291,13 +291,13 @@
 		</baseInfo>
 		<deviceType>peripheral</deviceType>
 		<origin>China</origin>
-		<release>52021</release>
+		<release>2021-05</release>
 		<price>6</price>
-		<critical>false</critical>
+		<isCritical>false</isCritical>
 		<portType>usb</portType>
 		<connectionType>wired</connectionType>
-	</mouse>
-	<mouse id="20">
+	</Mouse>
+	<Mouse id="d20">
 		<name>mouse5</name>
 		<baseInfo>
 			<producer>Logitech</producer>
@@ -306,10 +306,10 @@
 		</baseInfo>
 		<deviceType>peripheral</deviceType>
 		<origin>China</origin>
-		<release>62021</release>
+		<release>2021-06</release>
 		<price>6</price>
-		<critical>false</critical>
+		<isCritical>false</isCritical>
 		<portType>usb</portType>
 		<connectionType>wireless</connectionType>
-	</mouse>
+	</Mouse>
 </Devices>
