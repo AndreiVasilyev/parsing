@@ -23,11 +23,19 @@ public class XMLFileValidatorImpl implements XMLFileValidator {
 	private static final Logger log = LogManager.getLogger();
 	private final String xsdfilePath;
 
-	public XMLFileValidatorImpl(String xsdfilePath) {
+	public XMLFileValidatorImpl(String xsdfilePath) throws XMLParsingException {
+		if(xsdfilePath==null || xsdfilePath.isBlank()) {
+			log.error("Wrong XSD file path {}", xsdfilePath);
+			throw new XMLParsingException("Wrong XSD file path:" +xsdfilePath);
+		}
 		this.xsdfilePath = xsdfilePath;
 	}
 
 	public boolean validate(String xmlfilePath) throws XMLParsingException {
+		if(xmlfilePath==null || xmlfilePath.isBlank()) {
+			log.error("Wrong XML file path {}", xmlfilePath);
+			throw new XMLParsingException("Wrong XML file path:" +xmlfilePath);
+		}		
 		String language = XMLConstants.W3C_XML_SCHEMA_NS_URI;
 		SchemaFactory factory = SchemaFactory.newInstance(language);
 		File xsdFile = new File(xsdfilePath);
@@ -40,8 +48,9 @@ public class XMLFileValidatorImpl implements XMLFileValidator {
 			validator.validate(source);
 		} catch (IOException e) {
 			log.error("Error when reading files(XML:{} XSD{})", xmlfilePath, xsdFile);
-			throw new XMLParsingException("", e);
+			throw new XMLParsingException("Error when reading files (xml:"+xmlfilePath+", xsd:"+xsdfilePath+")" , e);
 		} catch (SAXException e) {
+			log.error("Error when validating files(XML:{} XSD{})", xmlfilePath, xsdFile);
 			return false;
 		}
 		return true;
