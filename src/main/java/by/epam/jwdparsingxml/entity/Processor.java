@@ -64,7 +64,9 @@ public class Processor extends Device {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("Processor [codeName=");
+		builder.append("Processor [");
+		builder.append(super.toString());
+		builder.append(", codeName=");
 		builder.append(codeName);
 		builder.append(", frequency=");
 		builder.append(frequency);

@@ -49,7 +49,9 @@ public class Mouse extends Device {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("Mouse [connectionInterface=");
+		builder.append("Mouse [");
+		builder.append(super.toString());
+		builder.append(", connectionInterface=");
 		builder.append(connectionInterface);
 		builder.append(", connectionType=");
 		builder.append(connectionType);

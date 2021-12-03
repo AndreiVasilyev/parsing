@@ -61,7 +61,9 @@ public class Motherboard extends Device {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("Motherboard [sizeType=");
+		builder.append("Motherboard [");
+		builder.append(super.toString());
+		builder.append(", sizeType=");
 		builder.append(sizeType);
 		builder.append(", power=");
 		builder.append(power);

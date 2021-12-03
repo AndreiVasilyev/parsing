@@ -1,4 +1,4 @@
-package by.epam.jwdparsingxml.parser;
+package by.epam.jwdparsingxml.builder.imp;
 
 import java.time.YearMonth;
 import java.util.ArrayList;
@@ -40,11 +40,11 @@ public class DeviceHandler extends DefaultHandler {
 		tagsOfDevices = new HashMap<>();
 		deviceAttributes = new HashMap<>();
 		for (DeviceEnum enumValue : DeviceEnum.values()) {
-			if (enumValue.ordinal() < 5) {
+			if (enumValue.ordinal() > 0 && enumValue.ordinal() < 5) {
 				tagsOfDevices.put(enumValue.getQName(), enumValue);
-				continue;
+			} else if (enumValue.ordinal() != 0) {
+				tagsOfProperties.put(enumValue.getQName(), enumValue);
 			}
-			tagsOfProperties.put(enumValue.getQName(), enumValue);
 		}
 		for (DeviceAttributeEnum enumValue : DeviceAttributeEnum.values()) {
 			deviceAttributes.put(enumValue.getQName(), enumValue);
@@ -65,7 +65,6 @@ public class DeviceHandler extends DefaultHandler {
 			case MOUSE -> new Mouse();
 			default -> new Device();
 			};
-
 			for (int i = 0; i < attributes.getLength(); i++) {
 				String attributeName = attributes.getQName(i);
 				switch (deviceAttributes.get(attributeName)) {
@@ -73,8 +72,10 @@ public class DeviceHandler extends DefaultHandler {
 					String attributeValue = attributes.getValue(i).substring(1);
 					long id = Long.parseLong(attributeValue);
 					currentDevice.setId(id);
+					break;
 				case PHOTO_REF:
 					currentDevice.setPhotoRef(attributes.getValue(i));
+					break;
 				}
 			}
 		} else if (tagsOfProperties.containsKey(qName)) {
@@ -84,7 +85,6 @@ public class DeviceHandler extends DefaultHandler {
 				currentTag = tagsOfProperties.get(qName);
 			}
 		}
-
 	}
 
 	@Override
@@ -114,18 +114,25 @@ public class DeviceHandler extends DefaultHandler {
 			case IS_CRITICAL -> currentDevice.setCritical(Boolean.parseBoolean(propertyValue));
 			case CODE_NAME -> ((Processor) currentDevice).setCodeName(propertyValue);
 			case FREQUENCY -> ((Processor) currentDevice).setFrequency(Integer.parseInt(propertyValue));
-			case POWER -> ((Processor) currentDevice).setPower(Integer.parseInt(propertyValue));
+			case POWER -> {
+				if (currentDevice instanceof Processor currentProcessor) {
+					currentProcessor.setPower(Integer.parseInt(propertyValue));
+				} else {
+					((Motherboard) currentDevice).setPower(Integer.parseInt(propertyValue));
+				}
+			}
 			case SIZE_TYPE -> ((Motherboard) currentDevice).setSizeType(SizeType.valueOf(propertyValue.toUpperCase()));
 			case IS_COOLER -> ((Motherboard) currentDevice).setCooler(Boolean.parseBoolean(propertyValue));
 			case STORAGE_DEVICE_TYPE -> ((StorageDevice) currentDevice)
 					.setDeviceType(StorageDeviceType.valueOf(propertyValue.toUpperCase()));
-			case VOLUME -> ((StorageDevice) currentDevice).setVolume(Integer.parseInt(propertyValue));
+			case VOLUME -> ((StorageDevice) currentDevice).setVolume(propertyValue);
 			case PORT_TYPE -> ((Mouse) currentDevice)
 					.setConnectionInterface(PortType.valueOf(propertyValue.toUpperCase()));
 			case CONNECTION_TYPE -> ((Mouse) currentDevice)
 					.setConnectionType(ConnectionType.valueOf(propertyValue.toUpperCase()));
 			default -> throw new SAXException("Unexpected tag value: " + currentTag);
 			}
+			currentTag = null;
 		}
 	}
 }

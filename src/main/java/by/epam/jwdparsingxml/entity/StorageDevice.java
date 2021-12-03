@@ -3,7 +3,7 @@ package by.epam.jwdparsingxml.entity;
 public class StorageDevice extends Device {
 
 	private StorageDeviceType deviceType;
-	private int volume;
+	private String volume;
 
 	public StorageDeviceType getDeviceType() {
 		return deviceType;
@@ -13,11 +13,11 @@ public class StorageDevice extends Device {
 		this.deviceType = deviceType;
 	}
 
-	public int getVolume() {
+	public String getVolume() {
 		return volume;
 	}
 
-	public void setVolume(int volume) {
+	public void setVolume(String volume) {
 		this.volume = volume;
 	}
 
@@ -26,7 +26,7 @@ public class StorageDevice extends Device {
 		final int prime = 31;
 		int result = super.hashCode();
 		result = prime * result + ((deviceType == null) ? 0 : deviceType.hashCode());
-		result = prime * result + volume;
+		result = prime * result + ((volume == null) ? 0 : volume.hashCode());
 		return result;
 	}
 
@@ -41,7 +41,10 @@ public class StorageDevice extends Device {
 		StorageDevice other = (StorageDevice) obj;
 		if (deviceType != other.deviceType)
 			return false;
-		if (volume != other.volume)
+		if (volume == null) {
+			if (other.volume != null)
+				return false;
+		} else if (!volume.equals(other.volume))
 			return false;
 		return true;
 	}
@@ -49,7 +52,9 @@ public class StorageDevice extends Device {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("StorageDevice [deviceType=");
+		builder.append("StorageDevice [");
+		builder.append(super.toString());
+		builder.append(", deviceType=");
 		builder.append(deviceType);
 		builder.append(", volume=");
 		builder.append(volume);
