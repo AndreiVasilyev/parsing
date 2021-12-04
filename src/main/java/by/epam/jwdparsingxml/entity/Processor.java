@@ -1,6 +1,6 @@
 package by.epam.jwdparsingxml.entity;
 
-public class Processor extends Device {
+public class Processor extends AbstractDevice {
 
 	private String codeName;
 	private int frequency;

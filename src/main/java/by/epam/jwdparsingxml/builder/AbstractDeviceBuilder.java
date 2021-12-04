@@ -3,25 +3,33 @@ package by.epam.jwdparsingxml.builder;
 import java.util.ArrayList;
 import java.util.List;
 
-import by.epam.jwdparsingxml.entity.Device;
-import by.epam.jwdparsingxml.exception.XMLParsingException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import by.epam.jwdparsingxml.entity.AbstractDevice;
+import by.epam.jwdparsingxml.exception.DeviceXMLParsingException;
+import by.epam.jwdparsingxml.validator.XMLFileValidator;
 
 public abstract class AbstractDeviceBuilder {
 
-	protected List<Device> devices;
+	private static final Logger log = LogManager.getLogger();
+	protected List<AbstractDevice> devices;
 
-	public AbstractDeviceBuilder() {
+	protected AbstractDeviceBuilder() {
 		devices = new ArrayList<>();
 	}
 
-	public AbstractDeviceBuilder(List<Device> devices) {
-		this.devices = devices;
-	}
-
-	public List<Device> getDevices() {
+	public List<AbstractDevice> getDevices() {
 		return devices;
 	}
 
-	abstract public void buildDevicesList(String xmlFilePath) throws XMLParsingException;
+	public void buildDevicesList(String xmlFilePath, XMLFileValidator validator) throws DeviceXMLParsingException {
+		if (!validator.validate(xmlFilePath)) {
+			log.error("XML file {} not valid", xmlFilePath);
+			throw new DeviceXMLParsingException("XML file " + xmlFilePath + " not valid");
+		}
+		buildDevicesList(xmlFilePath);
+	}
 
+	public abstract void buildDevicesList(String xmlFilePath) throws DeviceXMLParsingException;
 }

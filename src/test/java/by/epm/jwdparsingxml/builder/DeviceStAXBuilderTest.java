@@ -10,15 +10,14 @@ import org.testng.annotations.Test;
 
 import by.epam.jwdparsingxml.builder.AbstractDeviceBuilder;
 import by.epam.jwdparsingxml.entity.AbstractDevice;
-
 import by.epam.jwdparsingxml.exception.DeviceXMLParsingException;
 import by.epam.jwdparsingxml.factory.DeviceBuilderFactory;
 import by.epam.jwdparsingxml.validator.XMLFileValidator;
 import by.epam.jwdparsingxml.validator.impl.XMLFileValidatorImpl;
 import by.epm.jwdparsingxml.SourceDataCreator;
 
-public class DeviceDomBuilderTest {
-
+public class DeviceStAXBuilderTest {
+	
 	private AbstractDeviceBuilder builder;
 	private XMLFileValidator validator;
 	private List<AbstractDevice> expectedList;
@@ -26,7 +25,7 @@ public class DeviceDomBuilderTest {
 
 	@BeforeClass
 	public void setupStartValues() throws DeviceXMLParsingException {
-		builder = new DeviceBuilderFactory().createDeviceBuilder("dom");
+		builder = new DeviceBuilderFactory().createDeviceBuilder("stax");
 		String xsdFile = this.getClass().getResource("/xml/devices.xsd").getFile();
 		validator = new XMLFileValidatorImpl(xsdFile);
 		expectedList = SourceDataCreator.EXPECTED_LIST;

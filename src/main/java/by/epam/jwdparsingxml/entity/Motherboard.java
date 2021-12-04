@@ -1,6 +1,8 @@
 package by.epam.jwdparsingxml.entity;
 
-public class Motherboard extends Device {
+import by.epam.jwdparsingxml.entity.type.SizeType;
+
+public class Motherboard extends AbstractDevice {
 
 	private SizeType sizeType;
 	private int power;

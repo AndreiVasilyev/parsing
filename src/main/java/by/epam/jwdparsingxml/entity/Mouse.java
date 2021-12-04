@@ -1,6 +1,9 @@
 package by.epam.jwdparsingxml.entity;
 
-public class Mouse extends Device {
+import by.epam.jwdparsingxml.entity.type.ConnectionType;
+import by.epam.jwdparsingxml.entity.type.PortType;
+
+public class Mouse extends AbstractDevice {
 
 	private PortType connectionInterface;
 	private ConnectionType connectionType;

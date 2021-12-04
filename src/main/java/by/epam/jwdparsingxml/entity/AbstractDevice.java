@@ -2,7 +2,9 @@ package by.epam.jwdparsingxml.entity;
 
 import java.time.YearMonth;
 
-public class Device {
+import by.epam.jwdparsingxml.entity.type.DeviceType;
+
+public class AbstractDevice {
 
 	private long id;
 	private String photoRef;
@@ -110,7 +112,7 @@ public class Device {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Device other = (Device) obj;
+		AbstractDevice other = (AbstractDevice) obj;
 		if (baseInfo == null) {
 			if (other.baseInfo != null)
 				return false;
@@ -150,7 +152,7 @@ public class Device {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("Device [id=");
+		builder.append("AbstractDevice [id=");
 		builder.append(id);
 		builder.append(", photoRef=");
 		builder.append(photoRef);

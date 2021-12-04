@@ -1,6 +1,8 @@
 package by.epam.jwdparsingxml.entity;
 
-public class StorageDevice extends Device {
+import by.epam.jwdparsingxml.entity.type.StorageDeviceType;
+
+public class StorageDevice extends AbstractDevice {
 
 	private StorageDeviceType deviceType;
 	private String volume;

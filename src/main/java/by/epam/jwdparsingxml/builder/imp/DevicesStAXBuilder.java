@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.xml.stream.XMLInputFactory;
@@ -23,17 +22,17 @@ import by.epam.jwdparsingxml.builder.AbstractDeviceBuilder;
 import by.epam.jwdparsingxml.builder.DeviceAttributeEnum;
 import by.epam.jwdparsingxml.builder.DeviceEnum;
 import by.epam.jwdparsingxml.entity.BaseInfo;
-import by.epam.jwdparsingxml.entity.ConnectionType;
-import by.epam.jwdparsingxml.entity.Device;
-import by.epam.jwdparsingxml.entity.DeviceType;
+import by.epam.jwdparsingxml.entity.AbstractDevice;
 import by.epam.jwdparsingxml.entity.Motherboard;
 import by.epam.jwdparsingxml.entity.Mouse;
-import by.epam.jwdparsingxml.entity.PortType;
 import by.epam.jwdparsingxml.entity.Processor;
-import by.epam.jwdparsingxml.entity.SizeType;
 import by.epam.jwdparsingxml.entity.StorageDevice;
-import by.epam.jwdparsingxml.entity.StorageDeviceType;
-import by.epam.jwdparsingxml.exception.XMLParsingException;
+import by.epam.jwdparsingxml.entity.type.ConnectionType;
+import by.epam.jwdparsingxml.entity.type.DeviceType;
+import by.epam.jwdparsingxml.entity.type.PortType;
+import by.epam.jwdparsingxml.entity.type.SizeType;
+import by.epam.jwdparsingxml.entity.type.StorageDeviceType;
+import by.epam.jwdparsingxml.exception.DeviceXMLParsingException;
 
 public class DevicesStAXBuilder extends AbstractDeviceBuilder {
 
@@ -41,7 +40,7 @@ public class DevicesStAXBuilder extends AbstractDeviceBuilder {
 	private XMLInputFactory inputFactory;
 	private Map<String, DeviceEnum> tagsOfDevices;
 	private Map<String, DeviceEnum> tagsOfProperties;
-	private Device device;
+	private AbstractDevice device;
 
 	public DevicesStAXBuilder() {
 		inputFactory = XMLInputFactory.newInstance();
@@ -57,12 +56,8 @@ public class DevicesStAXBuilder extends AbstractDeviceBuilder {
 		}
 	}
 
-	public DevicesStAXBuilder(List<Device> devices) {
-		super(devices);
-	}
-
-	public void buildDevicesList(String xmlFilePath) throws XMLParsingException {
-
+	public void buildDevicesList(String xmlFilePath) throws DeviceXMLParsingException {
+		devices.clear();
 		try (FileInputStream inputStream = new FileInputStream(new File(xmlFilePath))) {
 			XMLStreamReader reader = inputFactory.createXMLStreamReader(inputStream);
 			String name;
@@ -78,14 +73,14 @@ public class DevicesStAXBuilder extends AbstractDeviceBuilder {
 				}
 			}
 		} catch (XMLStreamException e) {
-			log.error("StAX Parser error when parsing file {}", xmlFilePath);
-			throw new XMLParsingException("SAX Parser error when parsing file " + xmlFilePath);
+			log.error("StAX Parser error when parsing file {}", xmlFilePath, e);
+			throw new DeviceXMLParsingException("SAX Parser error when parsing file " + xmlFilePath, e);
 		} catch (FileNotFoundException e) {
-			log.error("StAX Parser can't find file {}", xmlFilePath);
-			throw new XMLParsingException("StAX Parser can't find file " + xmlFilePath);
+			log.error("StAX Parser can't find file {}", xmlFilePath, e);
+			throw new DeviceXMLParsingException("StAX Parser can't find file " + xmlFilePath, e);
 		} catch (IOException e) {
-			log.error("Error reading XML file {}", xmlFilePath);
-			throw new XMLParsingException("Error reading XML file " + xmlFilePath);
+			log.error("Error reading XML file {}", xmlFilePath, e);
+			throw new DeviceXMLParsingException("Error reading XML file " + xmlFilePath, e);
 		}
 	}
 
@@ -116,7 +111,10 @@ public class DevicesStAXBuilder extends AbstractDeviceBuilder {
 			extactCommonProperties(reader);
 			extractMouseProperties(reader);
 		}
-		default -> device = new Device();
+		default -> {
+			log.warn("Unexpected device tagName {}", tagName);
+			device = new AbstractDevice();
+		}
 		}
 	}
 
@@ -126,7 +124,9 @@ public class DevicesStAXBuilder extends AbstractDeviceBuilder {
 		device.setId(id);
 
 		String photoREF = reader.getAttributeValue(null, DeviceAttributeEnum.PHOTO_REF.getQName());
-		if (photoREF != null) {
+		if (photoREF == null) {
+			device.setPhotoRef("");
+		} else {
 			device.setPhotoRef(photoREF);
 		}
 	}
@@ -136,183 +136,170 @@ public class DevicesStAXBuilder extends AbstractDeviceBuilder {
 		while (reader.hasNext()) {
 			int type = reader.next();
 			switch (type) {
-			case XMLStreamConstants.START_ELEMENT:
+			case XMLStreamConstants.START_ELEMENT -> {
 				name = reader.getLocalName();
 				DeviceEnum tagName = tagsOfProperties.get(name);
 				switch (tagName) {
-				case NAME:
-					device.setName(getXMLText(reader));
-					break;
-				case BASE_INFO:
+				case NAME -> device.setName(getXMLText(reader));
+				case BASE_INFO -> {
 					BaseInfo baseInfo = buildBaseInfo(reader);
 					device.setBaseInfo(baseInfo);
-					break;
-				case DEVICE_TYPE:
+				}
+				case DEVICE_TYPE -> {
 					String deviceType = getXMLText(reader).toUpperCase();
 					device.setType(DeviceType.valueOf(deviceType));
-					break;
-				case ORIGIN:
-					device.setOrigin(getXMLText(reader));
-					break;
-				case RELEASE:
+				}
+				case ORIGIN -> device.setOrigin(getXMLText(reader));
+				case RELEASE -> {
 					String release = getXMLText(reader);
 					device.setRelease(YearMonth.parse(release));
-					break;
-				case PRICE:
+				}
+				case PRICE -> {
 					String priceValue = getXMLText(reader);
 					int price = Integer.parseInt(priceValue);
 					device.setPrice(price);
-					break;
-				case IS_CRITICAL:
+				}
+				case IS_CRITICAL -> {
 					String isCritical = getXMLText(reader);
 					device.setCritical(Boolean.parseBoolean(isCritical));
-					break;
-				default:
-					break;
+				}
+				default -> log.warn("Unexpected device tagName {}", tagName);
 				}
 
-				break;
-			case XMLStreamConstants.END_ELEMENT:
+			}
+			case XMLStreamConstants.END_ELEMENT -> {
 				name = reader.getLocalName();
 				if (name.equals(DeviceEnum.IS_CRITICAL.getQName())) {
 					return;
 				}
-				break;
+			}
 			}
 		}
 	}
 
-	private void extractProcessorProperties(XMLStreamReader reader) throws NumberFormatException, XMLStreamException {
+	private void extractProcessorProperties(XMLStreamReader reader) throws XMLStreamException {
 		String name;
 		while (reader.hasNext()) {
 			int type = reader.next();
 			switch (type) {
-			case XMLStreamConstants.START_ELEMENT:
+			case XMLStreamConstants.START_ELEMENT -> {
 				name = reader.getLocalName();
 				DeviceEnum tagName = tagsOfProperties.get(name);
 				switch (tagName) {
-				case CODE_NAME:
-					((Processor) device).setCodeName(getXMLText(reader));
-					break;
-				case FREQUENCY:
+				case CODE_NAME -> ((Processor) device).setCodeName(getXMLText(reader));
+				case FREQUENCY -> {
 					String frequencyValue = getXMLText(reader);
 					int frequency = Integer.parseInt(frequencyValue);
 					((Processor) device).setFrequency(frequency);
-					break;
-				case POWER:
+				}
+				case POWER -> {
 					String poweryValue = getXMLText(reader);
 					int power = Integer.parseInt(poweryValue);
 					((Processor) device).setPower(power);
-					break;
-				default:
-					break;
 				}
-				break;
-			case XMLStreamConstants.END_ELEMENT:
+				default -> log.warn("Unexpected tagName {}", tagName);
+				}
+			}
+			case XMLStreamConstants.END_ELEMENT -> {
 				name = reader.getLocalName();
 				if (tagsOfDevices.containsKey(name)) {
 					return;
 				}
-				break;
+			}
 			}
 		}
 	}
 
-	private void extractMotherboardProperties(XMLStreamReader reader) throws NumberFormatException, XMLStreamException {
+	private void extractMotherboardProperties(XMLStreamReader reader) throws XMLStreamException {
 		String name;
 		while (reader.hasNext()) {
 			int type = reader.next();
 			switch (type) {
-			case XMLStreamConstants.START_ELEMENT:
+			case XMLStreamConstants.START_ELEMENT -> {
 				name = reader.getLocalName();
 				DeviceEnum tagName = tagsOfProperties.get(name);
 				switch (tagName) {
-				case SIZE_TYPE:
+				case SIZE_TYPE -> {
 					String sizeType = getXMLText(reader);
 					((Motherboard) device).setSizeType(SizeType.valueOf(sizeType.toUpperCase()));
-					break;
-				case IS_COOLER:
+				}
+				case IS_COOLER -> {
 					String isCooler = getXMLText(reader);
 					((Motherboard) device).setCooler(Boolean.parseBoolean(isCooler));
-					break;
-				case POWER:
+				}
+				case POWER -> {
 					String poweryValue = getXMLText(reader);
 					int power = Integer.parseInt(poweryValue);
 					((Motherboard) device).setPower(power);
-					break;
-				default:
-					break;
 				}
-				break;
-			case XMLStreamConstants.END_ELEMENT:
+				default -> log.warn("Unexpected tagName {}", tagName);
+				}
+			}
+			case XMLStreamConstants.END_ELEMENT -> {
 				name = reader.getLocalName();
 				if (tagsOfDevices.containsKey(name)) {
 					return;
 				}
-				break;
+			}
 			}
 		}
 	}
 
-	private void extractStorageDeviceProperties(XMLStreamReader reader)
-			throws NumberFormatException, XMLStreamException {
+	private void extractStorageDeviceProperties(XMLStreamReader reader) throws XMLStreamException {
 		String name;
 		while (reader.hasNext()) {
 			int type = reader.next();
 			switch (type) {
-			case XMLStreamConstants.START_ELEMENT:
+			case XMLStreamConstants.START_ELEMENT -> {
 				name = reader.getLocalName();
 				DeviceEnum tagName = tagsOfProperties.get(name);
 				switch (tagName) {
-				case STORAGE_DEVICE_TYPE:
+				case STORAGE_DEVICE_TYPE -> {
 					String deviceType = getXMLText(reader);
 					((StorageDevice) device).setDeviceType(StorageDeviceType.valueOf(deviceType.toUpperCase()));
-					break;
-				case VOLUME:
-					((StorageDevice) device).setVolume(getXMLText(reader));
-					break;
-				default:
-					break;
 				}
-				break;
-			case XMLStreamConstants.END_ELEMENT:
+				case VOLUME -> ((StorageDevice) device).setVolume(getXMLText(reader));
+				default -> log.warn("Unexpected tagName {}", tagName);
+				}
+			}
+			case XMLStreamConstants.END_ELEMENT -> {
 				name = reader.getLocalName();
 				if (tagsOfDevices.containsKey(name)) {
 					return;
 				}
-				break;
+			}
 			}
 		}
 	}
 
-	private void extractMouseProperties(XMLStreamReader reader) throws NumberFormatException, XMLStreamException {
+	private void extractMouseProperties(XMLStreamReader reader) throws XMLStreamException {
 		String name;
 		while (reader.hasNext()) {
 			int type = reader.next();
 			switch (type) {
-			case XMLStreamConstants.START_ELEMENT:
+			case XMLStreamConstants.START_ELEMENT -> {
 				name = reader.getLocalName();
 				DeviceEnum tagName = tagsOfProperties.get(name);
 				switch (tagName) {
-				case PORT_TYPE:
+				case PORT_TYPE -> {
 					String portType = getXMLText(reader);
 					((Mouse) device).setConnectionInterface(PortType.valueOf(portType.toUpperCase()));
-					break;
-				case CONNECTION_TYPE:
+				}
+				case CONNECTION_TYPE -> {
 					String connectionType = getXMLText(reader);
 					((Mouse) device).setConnectionType(ConnectionType.valueOf(connectionType.toUpperCase()));
-					break;
-				default:
-					break;
 				}
-				break;
-			case XMLStreamConstants.END_ELEMENT:
+				default -> log.warn("Unexpected tagName {}", tagName);
+				}
+			}
+			case XMLStreamConstants.END_ELEMENT -> {
 				name = reader.getLocalName();
 				if (tagsOfDevices.containsKey(name)) {
 					return;
 				}
-				break;
 			}
+			}
+
 		}
 	}
 
@@ -322,37 +309,29 @@ public class DevicesStAXBuilder extends AbstractDeviceBuilder {
 		while (reader.hasNext()) {
 			int type = reader.next();
 			switch (type) {
-			case XMLStreamConstants.START_ELEMENT:
+			case XMLStreamConstants.START_ELEMENT -> {
 				name = reader.getLocalName();
 				DeviceEnum tagName = tagsOfProperties.get(name);
 				switch (tagName) {
-				case PRODUCER:
-					baseInfo.setProducer(getXMLText(reader));
-					break;
-				case MODEL:
-					baseInfo.setModel(getXMLText(reader));
-					break;
-				case SERIAL:
-					baseInfo.setSerial(getXMLText(reader));
-					break;
-				default:
-					break;
+				case PRODUCER -> baseInfo.setProducer(getXMLText(reader));
+				case MODEL -> baseInfo.setModel(getXMLText(reader));
+				case SERIAL -> baseInfo.setSerial(getXMLText(reader));
+				default -> log.warn("Unexpected tagName {}", tagName);
 				}
-				break;
-			case XMLStreamConstants.END_ELEMENT:
+			}
+			case XMLStreamConstants.END_ELEMENT -> {
 				name = reader.getLocalName();
 				if (name.equals(DeviceEnum.BASE_INFO.getQName())) {
 					return baseInfo;
 				}
-				break;
+			}
 			}
 		}
-
 		return baseInfo;
 	}
 
 	private String getXMLText(XMLStreamReader reader) throws XMLStreamException {
-		String text = null;
+		String text = "";
 		if (reader.hasNext()) {
 			reader.next();
 			text = reader.getText();

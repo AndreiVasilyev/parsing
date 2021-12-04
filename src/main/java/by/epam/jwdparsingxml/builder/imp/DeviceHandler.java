@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
@@ -13,21 +15,22 @@ import org.xml.sax.helpers.DefaultHandler;
 import by.epam.jwdparsingxml.builder.DeviceAttributeEnum;
 import by.epam.jwdparsingxml.builder.DeviceEnum;
 import by.epam.jwdparsingxml.entity.BaseInfo;
-import by.epam.jwdparsingxml.entity.ConnectionType;
-import by.epam.jwdparsingxml.entity.Device;
-import by.epam.jwdparsingxml.entity.DeviceType;
+import by.epam.jwdparsingxml.entity.AbstractDevice;
 import by.epam.jwdparsingxml.entity.Motherboard;
 import by.epam.jwdparsingxml.entity.Mouse;
-import by.epam.jwdparsingxml.entity.PortType;
 import by.epam.jwdparsingxml.entity.Processor;
-import by.epam.jwdparsingxml.entity.SizeType;
 import by.epam.jwdparsingxml.entity.StorageDevice;
-import by.epam.jwdparsingxml.entity.StorageDeviceType;
+import by.epam.jwdparsingxml.entity.type.ConnectionType;
+import by.epam.jwdparsingxml.entity.type.DeviceType;
+import by.epam.jwdparsingxml.entity.type.PortType;
+import by.epam.jwdparsingxml.entity.type.SizeType;
+import by.epam.jwdparsingxml.entity.type.StorageDeviceType;
 
 public class DeviceHandler extends DefaultHandler {
 
-	private List<Device> devices;
-	private Device currentDevice;
+	private static final Logger log = LogManager.getLogger();
+	private List<AbstractDevice> devices;
+	private AbstractDevice currentDevice;
 	private BaseInfo currentBaseInfo;
 	private DeviceEnum currentTag;
 	private Map<String, DeviceEnum> tagsOfProperties;
@@ -51,31 +54,37 @@ public class DeviceHandler extends DefaultHandler {
 		}
 	}
 
-	public List<Device> getDevices() {
+	public List<AbstractDevice> getDevices() {
 		return devices;
 	}
 
 	@Override
-	public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
+	public void startDocument() throws SAXException {
+		devices.clear();
+	}
+
+	@Override
+	public void startElement(String uri, String localName, String qName, Attributes attributes) {
 		if (tagsOfDevices.containsKey(qName)) {
 			currentDevice = switch (tagsOfDevices.get(qName)) {
 			case PROCESSOR -> new Processor();
 			case MOTHERBOARD -> new Motherboard();
 			case STORAGE_DEVICE -> new StorageDevice();
 			case MOUSE -> new Mouse();
-			default -> new Device();
+			default -> new AbstractDevice();
 			};
 			for (int i = 0; i < attributes.getLength(); i++) {
 				String attributeName = attributes.getQName(i);
 				switch (deviceAttributes.get(attributeName)) {
-				case ID:
+				case ID -> {
 					String attributeValue = attributes.getValue(i).substring(1);
 					long id = Long.parseLong(attributeValue);
 					currentDevice.setId(id);
-					break;
-				case PHOTO_REF:
-					currentDevice.setPhotoRef(attributes.getValue(i));
-					break;
+				}
+				case PHOTO_REF -> currentDevice.setPhotoRef(attributes.getValue(i));
+				}
+				if (currentDevice.getPhotoRef() == null) {
+					currentDevice.setPhotoRef("");
 				}
 			}
 		} else if (tagsOfProperties.containsKey(qName)) {
@@ -88,7 +97,7 @@ public class DeviceHandler extends DefaultHandler {
 	}
 
 	@Override
-	public void endElement(String uri, String localName, String qName) throws SAXException {
+	public void endElement(String uri, String localName, String qName) {
 		if (tagsOfDevices.containsKey(qName)) {
 			devices.add(currentDevice);
 			currentDevice = null;
@@ -99,7 +108,7 @@ public class DeviceHandler extends DefaultHandler {
 	}
 
 	@Override
-	public void characters(char[] ch, int start, int length) throws SAXException {
+	public void characters(char[] ch, int start, int length) {
 		String propertyValue = new String(ch, start, length);
 		if (currentTag != null) {
 			switch (currentTag) {
@@ -130,9 +139,10 @@ public class DeviceHandler extends DefaultHandler {
 					.setConnectionInterface(PortType.valueOf(propertyValue.toUpperCase()));
 			case CONNECTION_TYPE -> ((Mouse) currentDevice)
 					.setConnectionType(ConnectionType.valueOf(propertyValue.toUpperCase()));
-			default -> throw new SAXException("Unexpected tag value: " + currentTag);
+			default -> log.warn("Unexpected tagname apear: {}", currentTag);
 			}
 			currentTag = null;
 		}
 	}
+
 }

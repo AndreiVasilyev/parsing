@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Devices xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://www.example.org/devices"
+	xsi:schemaLocation="http://www.example.org/devices devices.xsd">
+	<Processor id="d1" photoRef="/photo/photo1.jpg">
+		<name>processor1</name>
+		<baseInfo>
+			<producer>Intel</producer>
+			<model>Core i5</model>
+			<serial>654682</serial>
+		</baseInfo>
+		<deviceType>integrated</deviceType>
+		<origin>Vietnam</origin>
+		<release>2019-01</release>
+		<price>50</price>
+		<isCritical>true</isCritical>
+		<codeName>codeName1</codeName>
+		<frequency>2400</frequency>
+		<power>30</power>
+	</Processor>
+	<Motherboard id="d6" photoRef="/photo/photo4.jpg">
+		<name>motherboard1</name>
+		<baseInfo>
+			<producer>Asus</producer>
+			<model>A50D40</model>
+			<serial>84351</serial>
+		</baseInfo>
+		<deviceType>integrated</deviceType>
+		<origin>China</origin>
+		<release>2020-05</release>
+		<price>40</price>
+		<isCritical>true</isCritical>
+		<sizeType>atx</sizeType>
+		<power>40</power>
+		<isCooler>true</isCooler>
+	</Motherboard>
+	<StorageDevice id="d11">
+		<name>storageDevice1</name>
+		<baseInfo>
+			<producer>Seagate</producer>
+			<model>Baracuda</model>
+			<serial>4735135</serial>
+		</baseInfo>
+		<deviceType>integrated</deviceType>
+		<origin>China</origin>
+		<release>2020-11</release>
+		<price>100</price>
+		<isCritical>true</isCritical>
+		<storageDeviceType>hdd</storageDeviceType>
+		<volume>4Tb</volume>
+	</StorageDevice>
+	<Mouse id="d16">
+		<name>mouse1</name>
+		<baseInfo>
+			<producer>Smartby</producer>
+			<model>43335</model>
+			<serial>427867867</serial>
+		</baseInfo>
+		<deviceType>peripheral</deviceType>
+		<origin>China</origin>
+		<release>2021-02</release>
+		<price>10</price>
+		<isCritical>false</isCritical>
+		<portType>usb</portType>
+		<connectionType>wireless</connectionType>
+	</Mouse>
+</Devices>

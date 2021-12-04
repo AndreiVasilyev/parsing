@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -23,25 +22,25 @@ import by.epam.jwdparsingxml.builder.AbstractDeviceBuilder;
 import by.epam.jwdparsingxml.builder.DeviceAttributeEnum;
 import by.epam.jwdparsingxml.builder.DeviceEnum;
 import by.epam.jwdparsingxml.entity.BaseInfo;
-import by.epam.jwdparsingxml.entity.ConnectionType;
-import by.epam.jwdparsingxml.entity.Device;
-import by.epam.jwdparsingxml.entity.DeviceType;
+import by.epam.jwdparsingxml.entity.AbstractDevice;
 import by.epam.jwdparsingxml.entity.Motherboard;
 import by.epam.jwdparsingxml.entity.Mouse;
-import by.epam.jwdparsingxml.entity.PortType;
 import by.epam.jwdparsingxml.entity.Processor;
-import by.epam.jwdparsingxml.entity.SizeType;
 import by.epam.jwdparsingxml.entity.StorageDevice;
-import by.epam.jwdparsingxml.entity.StorageDeviceType;
-import by.epam.jwdparsingxml.exception.XMLParsingException;
+import by.epam.jwdparsingxml.entity.type.ConnectionType;
+import by.epam.jwdparsingxml.entity.type.DeviceType;
+import by.epam.jwdparsingxml.entity.type.PortType;
+import by.epam.jwdparsingxml.entity.type.SizeType;
+import by.epam.jwdparsingxml.entity.type.StorageDeviceType;
+import by.epam.jwdparsingxml.exception.DeviceXMLParsingException;
 
-public class DevicesDOMBuilder extends AbstractDeviceBuilder{
+public class DevicesDOMBuilder extends AbstractDeviceBuilder {
 
-	private static final Logger log = LogManager.getLogger();	
+	private static final Logger log = LogManager.getLogger();
 	private DocumentBuilder builder;
 	private Map<String, DeviceEnum> tagsOfDevices;
 
-	public DevicesDOMBuilder() throws XMLParsingException {
+	public DevicesDOMBuilder() throws DeviceXMLParsingException {
 		this.devices = new ArrayList<>();
 		this.tagsOfDevices = new HashMap<>();
 		for (DeviceEnum deviceEnumName : DeviceEnum.values()) {
@@ -53,17 +52,14 @@ public class DevicesDOMBuilder extends AbstractDeviceBuilder{
 		try {
 			builder = factory.newDocumentBuilder();
 		} catch (ParserConfigurationException e) {
-			log.error("Error DOM Parser configuration");
-			throw new XMLParsingException("Error DOM Parser configuration");
+			log.error("Error DOM Parser configuration", e);
+			throw new DeviceXMLParsingException("Error DOM Parser configuration", e);
 		}
 	}
-	
-	public DevicesDOMBuilder(List<Device> devices) {
-		super(devices);
-	}
-	
-	public void buildDevicesList(String xmlFilePath) throws XMLParsingException {
+
+	public void buildDevicesList(String xmlFilePath) throws DeviceXMLParsingException {
 		Document document = null;
+		devices.clear();
 		try {
 			document = builder.parse(xmlFilePath);
 			Element root = document.getDocumentElement();
@@ -71,24 +67,24 @@ public class DevicesDOMBuilder extends AbstractDeviceBuilder{
 				NodeList devicesNodesList = root.getElementsByTagName(tagName);
 				for (int i = 0; i < devicesNodesList.getLength(); i++) {
 					Element deviceElement = (Element) devicesNodesList.item(i);
-					Device device = buildDevice(deviceElement);
+					AbstractDevice device = buildDevice(deviceElement);
 					devices.add(device);
 				}
 			}
 
 		} catch (SAXException e) {
-			log.error("SAX Parser error when parsing file {}", xmlFilePath);
-			throw new XMLParsingException("SAX Parser error when parsing file " + xmlFilePath);
+			log.error("SAX Parser error when parsing file {}", xmlFilePath, e);
+			throw new DeviceXMLParsingException("SAX Parser error when parsing file " + xmlFilePath, e);
 		} catch (IOException e) {
-			log.error("Error reading xml file {}", xmlFilePath);
+			log.error("Error reading xml file {}", xmlFilePath, e);
 			e.printStackTrace();
-			throw new XMLParsingException("Error reading xml file " + xmlFilePath);
+			throw new DeviceXMLParsingException("Error reading xml file " + xmlFilePath, e);
 		}
 	}
 
-	private Device buildDevice(Element deviceElement) {
+	private AbstractDevice buildDevice(Element deviceElement) {
 		DeviceEnum tagName = tagsOfDevices.get(deviceElement.getTagName());
-		Device device = switch (tagName) {
+		AbstractDevice device = switch (tagName) {
 		case PROCESSOR -> {
 			device = new Processor();
 
@@ -142,7 +138,10 @@ public class DevicesDOMBuilder extends AbstractDeviceBuilder{
 
 			yield device;
 		}
-		default -> new Device();
+		default -> {
+			log.warn("Unexpected device tagName {}", tagName);
+			yield new AbstractDevice();
+		}
 		};
 		BaseInfo baseInfo = new BaseInfo();
 
@@ -191,8 +190,7 @@ public class DevicesDOMBuilder extends AbstractDeviceBuilder{
 	private String extractTagTextContent(Element element, String tagName) {
 		NodeList nodeList = element.getElementsByTagName(tagName);
 		Node node = nodeList.item(0);
-		String textContent = node.getTextContent();
-		return textContent;
+		return node.getTextContent();
 	}
 
 }

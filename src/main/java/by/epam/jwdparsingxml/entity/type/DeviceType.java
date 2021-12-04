@@ -1,4 +1,4 @@
-package by.epam.jwdparsingxml.entity;
+package by.epam.jwdparsingxml.entity.type;
 
 public enum DeviceType {
 	INTEGRATED, PERIPHERAL
